@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedVice - Your Health Companion</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Medical Cross -->
+                            <rect x="15" y="5" width="10" height="30" rx="2" fill="#3498db"/>
+                            <rect x="5" y="15" width="30" height="10" rx="2" fill="#3498db"/>
+                            <!-- Heart Icon -->
+                            <path class="heart-icon pulse" d="M20 32C19.7 32 19.5 31.9 19.3 31.7C18.3 30.8 17.4 30 16.5 29.2C14.8 27.7 13.4 26.4 12.3 25.1C11 23.6 10 22.2 9.3 20.8C8.5 19.4 8.1 18 8.1 16.7C8.1 15.3 8.5 14 9.2 12.9C9.9 11.8 10.9 10.9 12.1 10.3C13.3 9.8 14.6 9.6 15.9 9.9C17 10.1 18 10.5 18.9 11.2C19.4 11.5 19.7 12 20 12.5C20.3 12 20.7 11.5 21.1 11.2C22 10.5 23 10.1 24.1 9.9C25.4 9.6 26.7 9.8 27.9 10.3C29.1 10.9 30.1 11.8 30.8 12.9C31.5 14 31.9 15.3 31.9 16.7C31.9 18 31.5 19.4 30.7 20.8C30 22.2 29 23.6 27.7 25.1C26.6 26.4 25.2 27.7 23.5 29.2C22.6 30 21.7 30.8 20.7 31.7C20.5 31.9 20.3 32 20 32Z" fill="#e74c3c"/>
+                        </svg>
+                    </div>
+                    <h1>MedVice</h1>
+                </div>
+                <div class="mobile-toggle">
+                    <i class="fa-solid fa-bars"></i>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="{{ url_for('home') }}">Home</a></li>
+                    <li><a href="{{ url_for('about') }}">About</a></li>
+                    <li><a href="{{ url_for('services')}}">Services</a></li>
+                    <li><a href="{{ url_for('contact')}}">Contact</a></li>
+                    <li><a href="{{ url_for('login') }}" >Login</a></li>
+                    <li><a href="{{ url_for('register') }}">Register</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h2>Your Personal Health Companion</h2>
+                <p>Get personalized medicine recommendations based on your symptoms. Locate nearby hospitals and receive expert advice to manage your health effectively.</p>
+                <a href="{{ url_for('register') }}" class="btn">Get Started</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="container">
+            <div class="section-title">
+                <h3>How MedVice Helps You</h3>
+                <p>Discover our range of features designed to provide you with personalized healthcare guidance</p>
+            </div>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="card-content">
+                        <div class="feature-icon">
+                            <i class="fa-solid fa-pills"></i>
+                        </div>
+                        <h4 class="feature-title">Medicine Recommendations</h4>
+                        <p>Get personalized medicine recommendations based on your symptoms. Our advanced system analyzes your condition and suggests appropriate medications.</p>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="card-content">
+                        <div class="feature-icon">
+                            <i class="fa-solid fa-utensils"></i>
+                        </div>
+                        <h4 class="feature-title">Diet Suggestions</h4>
+                        <p>Receive customized diet plans that complement your treatment and boost your recovery process with nutrition guidance.</p>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="card-content">
+                        <div class="feature-icon">
+                            <i class="fa-solid fa-dumbbell"></i>
+                        </div>
+                        <h4 class="feature-title">Exercise Routines</h4>
+                        <p>Access tailored workout routines designed to improve your condition and enhance your overall health and wellbeing.</p>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="card-content">
+                        <div class="feature-icon">
+                            <i class="fa-solid fa-hospital"></i>
+                        </div>
+                        <h4 class="feature-title">Nearby Hospitals</h4>
+                        <p>Quickly locate the nearest healthcare facilities equipped to handle your specific medical needs through our integrated map system.</p>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="card-content">
+                        <div class="feature-icon">
+                            <i class="fa-solid fa-envelope"></i>
+                        </div>
+                        <h4 class="feature-title">Email Updates</h4>
+                        <p>Receive your health recommendations directly to your email for easy reference and future consultation.</p>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="card-content">
+                        <div class="feature-icon">
+                            <i class="fa-solid fa-shield-virus"></i>
+                        </div>
+                        <h4 class="feature-title">Health Precautions</h4>
+                        <p>Learn about preventive measures to protect yourself and avoid complications related to your condition.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-content">
+                <h3>Take Control of Your Health Today</h3>
+                <p>Join thousands of users who manage their health effectively with MedVice's personalized recommendations and support.</p>
+                <a href="{{ url_for('register') }}" class="btn btn-white">Register Now</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <h4>MedVice</h4>
+                    <p>Your trusted health companion providing personalized medical recommendations and healthcare guidance.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="{{ url_for('home') }}">Home</a></li>
+                        <li><a href="{{ url_for('about') }}">About Us</a></li>
+                        <li><a href="{{ url_for('services')}}">Services</a></li>
+                        <li><a href="{{ url_for('contact')}}">Contact</a></li>
+                        <li><a href="#">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="#">Symptom Check</a></li>
+                        <li><a href="#">Medicine Recommendations</a></li>
+                        <li><a href="#">Diet Plans</a></li>
+                        <li><a href="#">Hospital Locator</a></li>
+                        <li><a href="#">Health Tips</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Contact Us</h4>
+                    <ul>
+                        <li><i class="fa-solid fa-envelope"></i> info@medvice.com</li>
+                        <li><i class="fa-solid fa-phone"></i> +1 (555) 123-4567</li>
+                        <li><i class="fa-solid fa-location-dot"></i> 123 Health Street, Medical District, 10001</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 MedVice. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

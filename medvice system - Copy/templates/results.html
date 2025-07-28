@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Diagnosis Result | MedVice</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .btn {
+            background-color: #1d3557;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+            display: inline-block;
+            margin-top: 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            background-color: #457b9d;
+        }
+
+        .ai-warning {
+            color: red;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .ai-response {
+            background-color: #f1f5f9;
+            border-left: 5px solid #1d3557;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+        }
+        
+        .ai-badge {
+            background-color: #4caf50;
+            color: white;
+            font-size: 0.75rem;
+            padding: 3px 8px;
+            border-radius: 12px;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+        
+        .diagnosis-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .section-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            background-color: #fafafa;
+        }
+        
+        .section-card h3 {
+            margin-top: 0;
+            color: #1d3557;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .disclaimer {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f8f8f8;
+            border-radius: 5px;
+            border-left: 3px solid #ffa500;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .flash-messages {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+
+        .flash-message {
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .flash-message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        @media (max-width: 600px) {
+            .card-content {
+                padding: 20px;
+            }
+
+            .hero-content h2 {
+                font-size: 1.5rem;
+            }
+
+            .hero-content p {
+                font-size: 1rem;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container navbar">
+            <div class="logo">
+                <svg class="logo-icon heart-icon pulse" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 
+                        2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 
+                        3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 
+                        6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+                <h1>MedVice</h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="{{ url_for('symptoms') }}">Check Symptoms</a></li>
+                <li><a href="{{ url_for('map') }}">Nearby Hospitals</a></li>
+                {% if 'user_id' in session %}
+                <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                {% else %}
+                <li><a href="{{ url_for('login') }}">Login</a></li>
+                <li><a href="{{ url_for('register') }}">Register</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container hero-content">
+            <h2>Diagnosis Results {% if ai_powered %}<span class="ai-badge">AI Powered</span>{% endif %}</h2>
+            <p>Here is what we found based on your symptoms.</p>
+        </div>
+    </section>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="container">
+            <ul class="flash-messages">
+                {% for category, message in messages %}
+                <li class="flash-message {% if category == 'error' %}error{% endif %}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Results Section -->
+    <section class="features" aria-labelledby="diagnosis">
+        <div class="container">
+            <div class="card-content" style="background: white; padding: 30px; border-radius: 10px; box-shadow: var(--shadow); max-width: 800px; margin: auto;">
+                <div class="diagnosis-header">
+                    <h2 id="diagnosis" style="margin-bottom: 0;">Diagnosis: {{ prediction }}</h2>
+                    {% if ai_powered %}
+                    <span class="ai-badge" style="margin-left: 10px;">AI Analysis</span>
+                    {% endif %}
+                </div>
+
+                {% if prediction.startswith("AI prediction failed") %}
+                    <p class="ai-warning">{{ prediction }}</p>
+                {% else %}
+                    <div class="section-card">
+                        <h3>📝 Description</h3>
+                        <p>{{ description }}</p>
+                    </div>
+                {% endif %}
+
+                <div class="section-card">
+                    <h3>💊 Recommended Medications</h3>
+                    <ul>
+                        {% for med in medications %}
+                        <li>{{ med }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="section-card">
+                    <h3>⚠️ Precautions</h3>
+                    <ul>
+                        {% for pre in precautions %}
+                        <li>{{ pre }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="section-card">
+                    <h3>🍎 Suggested Diet</h3>
+                    <ul>
+                        {% for diet in diets %}
+                        <li>{{ diet }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="section-card">
+                    <h3>🏃‍♂️ Workout Recommendations</h3>
+                    <ul>
+                        {% for workout in workouts %}
+                        <li>{{ workout }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                {% if ai_powered %}
+                <div class="disclaimer">
+                    <strong>Note:</strong> This diagnosis was generated by AI based on your symptom description. 
+                    The information provided is for educational purposes only and should not replace professional medical advice. 
+                    Please consult with a healthcare provider for proper diagnosis and treatment.
+                </div>
+                {% endif %}
+
+                {% if 'user_id' in session %}
+                <form action="{{ url_for('save_results') }}" method="post" id="save-form">
+                    <input type="hidden" name="prediction" value="{{ prediction }}">
+                    <input type="hidden" name="description" value="{{ description }}">
+                    {% for med in medications %}
+                    <input type="hidden" name="medications" value="{{ med }}">
+                    {% endfor %}
+                    {% for pre in precautions %}
+                    <input type="hidden" name="precautions" value="{{ pre }}">
+                    {% endfor %}
+                    {% for diet in diets %}
+                    <input type="hidden" name="diets" value="{{ diet }}">
+                    {% endfor %}
+                    {% for workout in workouts %}
+                    <input type="hidden" name="workouts" value="{{ workout }}">
+                    {% endfor %}
+                    
+                    <div class="btn-group">
+                        <button type="submit" class="btn">💾 Save to Dashboard</button>
+                        <a href="{{ url_for('symptoms') }}" class="btn">🔄 Check Other Symptoms</a>
+                        <a href="{{ url_for('map') }}" class="btn">🏥 Find Nearby Hospitals</a>
+                    </div>
+                </form>
+                {% else %}
+                <div class="btn-group">
+                    <a href="{{ url_for('login') }}" class="btn">🔒 Login to Save Results</a>
+                    <a href="{{ url_for('symptoms') }}" class="btn">🔄 Check Other Symptoms</a>
+                    <a href="{{ url_for('map') }}" class="btn">🏥 Find Nearby Hospitals</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container footer-grid">
+            <div class="footer-column">
+                <h4>MedVice</h4>
+                <p>Your trusted healthcare assistant.</p>
+            </div>
+            <div class="footer-column">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="{{ url_for('home') }}">Home</a></li>
+                    <li><a href="{{ url_for('symptoms') }}">Check Symptoms</a></li>
+                    <li><a href="{{ url_for('map') }}">Nearby Hospitals</a></li>
+                    {% if 'user_id' in session %}
+                    <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            &copy; 2025 MedVice. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- Alert Box Script - Modified to be less intrusive -->
+    <script>
+        window.onload = function() {
+            // Show a notification after 3 seconds instead of an immediate popup
+            setTimeout(function() {
+                const notification = document.createElement('div');
+                notification.style.position = 'fixed';
+                notification.style.bottom = '20px';
+                notification.style.right = '20px';
+                notification.style.backgroundColor = '#1d3557';
+                notification.style.color = 'white';
+                notification.style.padding = '15px 20px';
+                notification.style.borderRadius = '5px';
+                notification.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+                notification.style.zIndex = '1000';
+                notification.innerHTML = '🏥 Want to find nearby hospitals to buy your medicines? <a href="/map" style="color: #a8dadc; text-decoration: underline; margin-left: 10px;">View Map</a>';
+                
+                // Add close button
+                const closeBtn = document.createElement('span');
+                closeBtn.innerHTML = '✕';
+                closeBtn.style.marginLeft = '15px';
+                closeBtn.style.cursor = 'pointer';
+                closeBtn.onclick = function() {
+                    document.body.removeChild(notification);
+                };
+                notification.appendChild(closeBtn);
+                
+                document.body.appendChild(notification);
+                
+                // Auto-dismiss after 10 seconds
+                setTimeout(function() {
+                    if (document.body.contains(notification)) {
+                        document.body.removeChild(notification);
+                    }
+                }, 10000);
+            }, 3000);
+        };
+    </script>
+</body>
+</html>

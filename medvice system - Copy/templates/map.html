@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Nearby Hospitals | MedVice</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <style>
+        #map {
+            height: 500px;
+            width: 100%;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container navbar">
+            <div class="logo">
+                <svg class="logo-icon heart-icon pulse" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 
+                    2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 
+                    3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 
+                    8.5c0 3.78-3.4 6.86-8.55 
+                    11.54L12 21.35z"/>
+                </svg>
+                <h1>MedVice</h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="{{ url_for('symptoms') }}">Check Symptoms</a></li>
+                <li><a href="{{ url_for('logout') }}">Logout</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container hero-content">
+            <h2>Nearby Hospitals</h2>
+            <p>Find hospitals near your current location.</p>
+        </div>
+    </section>
+
+    <div class="container">
+        <div id="map"></div>
+    </div>
+
+    <footer>
+        <div class="container footer-grid">
+            <div class="footer-column">
+                <h4>MedVice</h4>
+                <p>Your trusted healthcare assistant.</p>
+            </div>
+            <div class="footer-column">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="{{ url_for('home') }}">Home</a></li>
+                    <li><a href="{{ url_for('symptoms') }}">Check Symptoms</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            &copy; 2025 MedVice. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- Script to load map and nearby hospitals -->
+    <script>
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showMap, error);
+        } else {
+            alert("Geolocation is not supported by your browser.");
+        }
+
+        function showMap(position) {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+
+            const map = L.map('map').setView([lat, lon], 14);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+
+            L.marker([lat, lon]).addTo(map)
+                .bindPopup('You are here').openPopup();
+
+            // Overpass API query to find hospitals nearby
+            const query = `
+                [out:json];
+                (
+                  node["amenity"="hospital"](around:3000, ${lat}, ${lon});
+                  way["amenity"="hospital"](around:3000, ${lat}, ${lon});
+                  relation["amenity"="hospital"](around:3000, ${lat}, ${lon});
+                );
+                out center;
+            `;
+
+            fetch("https://overpass-api.de/api/interpreter", {
+                method: "POST",
+                body: query
+            })
+            .then(res => res.json())
+            .then(data => {
+                data.elements.forEach(hospital => {
+                    const coords = hospital.type === "node" ? [hospital.lat, hospital.lon] : [hospital.center.lat, hospital.center.lon];
+                    const name = hospital.tags.name || "Unnamed Hospital";
+
+                    L.marker(coords)
+                        .addTo(map)
+                        .bindPopup(`<b>${name}</b>`);
+                });
+            });
+        }
+
+        function error(err) {
+            alert("Could not get your location. Please allow location access.");
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!-- templates/about.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>About Us - MedVice</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script defer src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container navbar">
+            <div class="logo">
+                <!-- Heart Icon SVG same as index -->
+                <svg class="logo-icon heart-icon pulse" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 
+                             2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09 
+                             C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 
+                             8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+                <h1>MedVice</h1>
+            </div>
+            <div class="mobile-toggle">&#9776;</div>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="{{ url_for('about') }}">About</a></li>
+                <li><a href="{{ url_for('login') }}">Login</a></li>
+                <li><a href="{{ url_for('register') }}" class="btn btn-outline">Register</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h2>About MedVice</h2>
+            <p>Empowering your health with intelligent, accessible, and reliable medical advice at your fingertips.</p>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="container">
+            <div class="section-title">
+                <h3>Our Mission</h3>
+                <p>We aim to bridge the gap between symptoms and solutions, offering instant, AI-powered recommendations and tools to guide patients to better care.</p>
+            </div>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="card-content">
+                        <div class="feature-icon"><i class="fas fa-stethoscope"></i></div>
+                        <h4 class="feature-title">Smart Diagnosis</h4>
+                        <p>We use AI to help identify likely conditions based on your symptoms and guide you to appropriate care.</p>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="card-content">
+                        <div class="feature-icon"><i class="fas fa-map-marker-alt"></i></div>
+                        <h4 class="feature-title">Hospital Locator</h4>
+                        <p>Find the nearest hospitals or clinics quickly and conveniently from anywhere.</p>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="card-content">
+                        <div class="feature-icon"><i class="fas fa-bell"></i></div>
+                        <h4 class="feature-title">Notifications</h4>
+                        <p>Get timely updates via email or SMS about your medical schedule and reminders.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <div class="cta-content">
+            <h3>Join MedVice Today</h3>
+            <p>Sign up for a smarter, simpler, and safer way to manage your health.</p>
+            <a href="{{ url_for('register') }}" class="btn btn-white">Create an Account</a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container footer-grid">
+            <div class="footer-column">
+                <h4>MedVice</h4>
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Team</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">FAQs</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Follow Us</h4>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="container copyright">
+            &copy; 2025 MedVice. All rights reserved.
+        </div>
+    </footer>
+</body>
+</html>

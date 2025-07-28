@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Check Symptoms | MedVice</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- Include jQuery UI for autocomplete -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <style>
+        .ai-badge {
+            background-color: #4caf50;
+            color: white;
+            font-size: 0.75rem;
+            padding: 3px 8px;
+            border-radius: 12px;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+        
+        .symptoms-examples {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .ui-autocomplete {
+            max-height: 200px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            z-index: 9999;
+        }
+        
+        .example-tag {
+            display: inline-block;
+            background-color: #f1f1f1;
+            color: #555;
+            padding: 5px 10px;
+            margin: 3px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+        }
+        
+        .example-tag:hover {
+            background-color: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container navbar">
+            <div class="logo">
+                <svg class="logo-icon heart-icon pulse" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                <h1>MedVice</h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="{{ url_for('about') }}">About</a></li>
+                <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('logout') }}">Logout</a></li>
+            </ul>
+        </div>
+    </header>
+    
+    <section class="hero">
+        <div class="container hero-content">
+            <h2>Enter Your Symptoms <span class="ai-badge">AI Powered</span></h2>
+            <p>Describe your symptoms and we'll help you find suitable medicine and advice.</p>
+        </div>
+    </section>
+    
+    <section class="features">
+        <div class="container">
+            <form action="{{ url_for('symptoms') }}" method="POST" class="card-content" style="max-width: 600px; margin: auto; background: white; padding: 30px; border-radius: 10px; box-shadow: var(--shadow);">
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="symptoms">Symptoms (separated by commas)</label>
+                    <textarea id="symptoms" name="symptoms" rows="4" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;" placeholder="e.g., fever, cough, headache, fatigue"></textarea>
+                    
+                    <div class="symptoms-examples">
+                        <p><strong>How to describe your symptoms:</strong></p>
+                        <p>You can enter medical terms or describe how you feel in your own words. Our AI will analyze your symptoms even if they're not in our standard database.</p>
+                        
+                        <p><strong>Quick examples to try:</strong></p>
+                        <div id="example-tags">
+                            <span class="example-tag">fever, cough, fatigue</span>
+                            <span class="example-tag">headache, dizziness, blurred vision</span>
+                            <span class="example-tag">sore throat, runny nose</span>
+                            <span class="example-tag">I feel dizzy when standing up quickly</span>
+                            <span class="example-tag">My joints hurt when walking</span>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn">Get Diagnosis</button>
+            </form>
+        </div>
+    </section>
+    
+    <footer>
+        <div class="container footer-grid">
+            <div class="footer-column">
+                <h4>MedVice</h4>
+                <p>Your trusted healthcare assistant.</p>
+            </div>
+            <div class="footer-column">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="{{ url_for('home') }}">Home</a></li>
+                    <li><a href="{{ url_for('symptoms') }}">Check Symptoms</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            &copy; 2025 MedVice. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- Include jQuery and jQuery UI -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Define available symptoms from the server
+            var availableSymptoms = {{ all_symptoms|default([])|tojson }};
+            
+            // Function to extract the current term being typed
+            function extractLast(term) {
+                return term.split(/,\s*/).pop();
+            }
+            
+            $("#symptoms")
+                // Enable autocomplete
+                .on("keydown", function(event) {
+                    if (event.keyCode === $.ui.keyCode.TAB &&
+                        $(this).autocomplete("instance").menu.active) {
+                        event.preventDefault();
+                    }
+                })
+                .autocomplete({
+                    minLength: 1,
+                    source: function(request, response) {
+                        // Get the last term being typed
+                        var term = extractLast(request.term.toLowerCase());
+                        
+                        if (term.length < 1) {
+                            return [];
+                        }
+                        
+                        response($.ui.autocomplete.filter(
+                            availableSymptoms, term
+                        ));
+                    },
+                    focus: function() {
+                        return false;
+                    },
+                    select: function(event, ui) {
+                        var terms = this.value.split(/,\s*/);
+                        // Remove the current input
+                        terms.pop();
+                        // Add the selected item
+                        terms.push(ui.item.value);
+                        // Add placeholder to get the comma-and-space at the end
+                        terms.push("");
+                        this.value = terms.join(", ");
+                        return false;
+                    }
+                });
+                
+            // Make example tags clickable
+            $(".example-tag").click(function() {
+                $("#symptoms").val($(this).text());
+            });
+        });
+    </script>
+</body>
+</html>
